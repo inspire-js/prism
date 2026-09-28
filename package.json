@@ -32,9 +32,13 @@
 		"prism.js"
 	],
 	"scripts": {
-		"release": "npm whoami >/dev/null 2>&1 || npm login && release-it"
+		"release": "npm whoami >/dev/null 2>&1 || npm login && release-it",
+		"dependencies": "nudeps",
+		"prepare": "nudeps"
 	},
 	"devDependencies": {
+		"@inspirejs/core": "^3.1.0",
+		"nudeps": "^0.4.1",
 		"prettier": "~3.5.3",
 		"prettier-plugin-brace-style": "latest",
 		"prettier-plugin-merge": "latest",

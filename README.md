@@ -22,3 +22,7 @@ Prism scans for `lang-*` / `language-*` classes on code elements or any of their
 ## Autoload
 
 Autoloads when any element has a `lang-*` or `language-*` class.
+
+## Demo
+
+`index.html` is a small demo deck. Run `npm install` to generate its import map, then serve this folder with any static server, e.g. `npx http-server`. Opening the file directly won’t work, because browsers block ES modules on `file://` URLs.

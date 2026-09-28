@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>@inspirejs/prism demo</title>
+
+		<!-- nudeps import map: must be a classic script, before any module scripts -->
+		<script src="importmap.js"></script>
+
+		<link href="client_modules/@inspirejs/core/inspire.css" rel="stylesheet" />
+		<link href="demo.css" rel="stylesheet" />
+
+		<script type="module">
+			import "@inspirejs/core";
+			import "./plugin.js";
+		</script>
+	</head>
+	<body class="language-html" data-prism-plugins="line-highlight, inline-color">
+		<header class="slide">
+			<h1>@inspirejs/<wbr />prism</h1>
+			<p>
+				Syntax highlighting for your slides, powered by
+				<a href="https://prismjs.com">Prism</a>
+			</p>
+		</header>
+
+		<section class="slide">
+			<h1>Language classes</h1>
+			<p>
+				Add a <code>language-*</code> class. Short names like <code>lang-js</code> work too.
+			</p>
+			<pre><code>&lt;code class="language-css">p { margin: 0 }&lt;/code></code></pre>
+			<pre class="delayed"><code class="language-css">p { margin: 0 }</code></pre>
+		</section>
+
+		<section class="slide language-js">
+			<h1>One language per slide</h1>
+			<p>Set it once, and every code block on the slide follows.</p>
+			<pre><code class="language-html">&lt;section class="slide language-js">
+	&lt;pre>&lt;code>let x = 1;&lt;/code>&lt;/pre>
+&lt;/section></code></pre>
+			<pre class="delayed"><code>let x = 1;</code></pre>
+		</section>
+
+		<section class="slide">
+			<h1>Prism plugins</h1>
+			<p>Load as many Prism plugins as you like. Their styles come along.</p>
+			<pre><code>&lt;body
+	data-prism-plugins="line-highlight, inline-color">
+	&lt;pre data-line="3">…&lt;/pre></code></pre>
+			<pre class="delayed" data-line="3"><code class="language-css">.slide {
+	display: flex;
+	gap: 1em;
+	color: rebeccapurple;
+}</code></pre>
+		</section>
+
+		<section class="slide">
+			<h1>Opting out</h1>
+			<p>Leave any code block plain.</p>
+			<pre><code>&lt;pre class="prism-ignore">
+	&lt;code class="language-css">…&lt;/code>
+&lt;/pre></code></pre>
+			<pre
+				class="prism-ignore delayed"
+			><code class="language-css">a { color: red }</code></pre>
+		</section>
+
+		<section class="slide">
+			<h1>Code added later</h1>
+			<p>Code you add later gets highlighted too.</p>
+			<pre><code class="language-js">slide.insertAdjacentHTML("beforeend",
+	`&lt;pre>&lt;code class="lang-ts">${code}&lt;/code>&lt;/pre>`);
+Inspire.domchanged(slide);</code></pre>
+			<script type="text/plain" delayed:script>
+				// The same calls the slide shows
+				let slide = this.parentElement;
+				let code = "function add (a: number, b: number) {\n\treturn a + b;\n}";
+				slide.insertAdjacentHTML(
+					"beforeend",
+					`<pre><code class="lang-ts">${code}</code></pre>`,
+				);
+				Inspire.domchanged(slide);
+			</script>
+		</section>
+
+		<footer class="slide">
+			<h1>Get the plugin</h1>
+			<p><a href="https://github.com/inspire-js/prism">github.com/inspire-js/prism</a></p>
+		</footer>
+	</body>
+</html>

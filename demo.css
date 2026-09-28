@@ -1,0 +1,210 @@
+:root {
+	color-scheme: dark;
+
+	--paper: oklch(40% 0.094 253);
+	--ink: oklch(97% 0.008 254);
+	--ink-muted: oklch(80% 0.045 252);
+
+	--panel: oklch(32% 0.075 253);
+	--panel-text: oklch(96% 0.011 252);
+	--panel-muted: oklch(83% 0.05 253);
+	--keyword: oklch(86% 0.085 34);
+	--property: oklch(89% 0.071 225);
+	--string: oklch(93% 0.098 91);
+
+	--font-text: system-ui, sans-serif;
+	--font-code: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+body {
+	background: var(--paper);
+	color: var(--ink);
+	font: 100%/1.5 var(--font-text);
+}
+
+/* A length, so it resolves in the slide's em and the smaller code blocks inherit it as is */
+@property --gap {
+	syntax: "<length>";
+	inherits: true;
+	initial-value: 0px;
+}
+
+.slide {
+	--gap: 0.6em;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: var(--gap);
+	box-sizing: border-box;
+	/* A centered 30em column, measured in the slide's em, so captions and code share one width */
+	padding-block: 6dvh;
+	padding-inline: max(8dvw, (100% - 30em) / 2);
+	background: var(--paper);
+
+	> * {
+		margin: 0;
+	}
+}
+
+#indicator {
+	color: var(--ink-muted);
+}
+
+h1 {
+	font-size: 1.8em;
+	line-height: 1.1;
+	letter-spacing: -0.02em;
+	text-wrap: balance;
+}
+
+:is(header, footer).slide {
+	background: var(--panel);
+	color: var(--panel-text);
+
+	> h1 {
+		font: 600 2.4em/1.1 var(--font-code);
+		letter-spacing: -0.04em;
+		/* A monospace space is a full character wide */
+		word-spacing: -0.25em;
+	}
+
+	> p {
+		color: var(--panel-muted);
+		text-wrap: balance;
+	}
+
+	a {
+		color: var(--property);
+		text-underline-offset: 0.2em;
+	}
+}
+
+section.slide > p {
+	color: var(--ink-muted);
+	font-size: 0.7em;
+	text-wrap: pretty;
+}
+
+code,
+pre {
+	font-family: var(--font-code);
+	tab-size: 4;
+}
+
+/* Inline code sits on the panel color too, so token colors stay readable */
+:not(pre) > code {
+	padding: 0.1em 0.35em;
+	border-radius: 0.25em;
+	background: var(--panel);
+	color: var(--panel-text);
+	font-size: 0.95em;
+	box-decoration-break: clone;
+}
+
+pre {
+	margin: 0;
+	padding: 0.9em 1.2em;
+	border-radius: 0.4em;
+	background: var(--panel);
+	color: var(--panel-text);
+	font-size: 0.85em;
+	line-height: 1.5;
+	overflow: auto;
+}
+
+/* The labels are a visual cue only, so screen readers skip them */
+section.slide > pre {
+	/* Room above the first line, so the label never covers the code */
+	--label-space: 1.5em;
+
+	position: relative;
+	padding-block-start: var(--label-space);
+
+	&::before {
+		position: absolute;
+		inset-block-start: 0.6em;
+		inset-inline-end: 1.6em;
+		color: var(--panel-muted);
+		font-size: 0.6em;
+	}
+
+	&:first-of-type:has(~ pre) {
+		border-end-start-radius: 0;
+		border-end-end-radius: 0;
+
+		&::before {
+			content: "Source";
+			content: "Source" / "";
+		}
+	}
+
+	&:nth-of-type(2) {
+		margin-block-start: calc(-1 * var(--gap));
+		border-block-start: 1px dashed color-mix(in oklch, var(--panel-muted) 40%, transparent);
+		border-start-start-radius: 0;
+		border-start-end-radius: 0;
+		background: color-mix(in oklab, var(--panel), white 6%);
+
+		&::before {
+			content: "Result";
+			content: "Result" / "";
+			color: var(--string);
+		}
+	}
+}
+
+/* In forced colors mode, keep the syntax colors: showing them is the point of this deck */
+pre,
+:not(pre) > code {
+	forced-color-adjust: none;
+}
+
+/* Zero specificity, so a deck can recolor any token */
+:where(.token) {
+	&:where(.comment, .prolog, .doctype, .punctuation) {
+		color: var(--panel-muted);
+	}
+
+	&:where(.keyword, .selector, .tag, .atrule, .important) {
+		color: var(--keyword);
+	}
+
+	&:where(.property, .function, .attr-name, .builtin, .class-name) {
+		color: var(--property);
+	}
+
+	&:where(.string, .attr-value, .number, .boolean) {
+		color: var(--string);
+	}
+}
+
+/*
+ * The line-highlight plugin is styled for light themes.
+ * Its stylesheet loads after this one, so these selectors are one step more specific.
+ */
+.slide pre[data-line] {
+	/* Only the inline end changes: the highlight's margin-top below matches the block-start padding */
+	padding-inline-end: 1.2em;
+}
+
+pre .line-highlight {
+	/* The plugin's 1em matches its own pre padding; ours is taller where there is a label */
+	margin-block-start: var(--label-space, 1em);
+	background: linear-gradient(
+		to right,
+		color-mix(in oklch, var(--string) 12%, transparent) 70%,
+		transparent
+	);
+
+	/* The line number badge, centered on its line */
+	&::before {
+		inset-block: 0;
+		block-size: fit-content;
+		margin-block: auto;
+		background: var(--string);
+		color: var(--panel);
+		font: 600 0.7em/1.5 var(--font-code);
+		box-shadow: none;
+	}
+}
