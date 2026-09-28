@@ -1,0 +1,5 @@
+node_modules
+.claude
+
+# A library: consumers resolve their own dependency versions
+package-lock.json
